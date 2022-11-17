@@ -1,6 +1,6 @@
 # udp_client
 
-A new Flutter project.
+this is a client udp for receiver data from server udp
 
 ## Getting Started
 
