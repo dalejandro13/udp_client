@@ -37,10 +37,10 @@ class _SwitchButtonState extends State<SwitchButton> {
               if (widget.udp != null) {
                 widget.controlValue = value;
                 if (widget.controlValue) {
-                  widget.udp!.send(widget.data, InternetAddress("192.168.2.1"), 9742); //encender ozono
+                  widget.udp!.send(widget.data, InternetAddress("192.168.2.1"), 9742); //encender modulo
                 } 
                 else {
-                  widget.udp!.send(widget.data2, InternetAddress("192.168.2.1"), 9742); //apagar ozono
+                  widget.udp!.send(widget.data2, InternetAddress("192.168.2.1"), 9742); //apagar modulo
                 }
               }
             });

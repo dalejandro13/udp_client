@@ -31,7 +31,7 @@ class _UdpCommunicationState extends State<UdpCommunication> {
   TextEditingController? ctrl2 = TextEditingController();
   ScrollController? ctrl3 = ScrollController();
   RawDatagramSocket? udp;
-  int valueOzoneLevel = 0;
+  double ozoneValuePPM = 0.0, ozoneValuePPB = 0.0;
   bool ozono = false, compresor = false, ionizar = false, airFresh = false;
 
   @override
@@ -54,10 +54,10 @@ class _UdpCommunicationState extends State<UdpCommunication> {
           if (d == null) return;
 
           String message = String.fromCharCodes(d.data).trim();
-          valueOzoneLevel = int.parse(message); //convertir niveles de ozono de string a int
           //log('Datagram from ${d.address.address}:${d.port}\n');
           //log('message: $message\n');
           ctrl2?.text += "$message\n";
+          await getValues(message);
           if(scrolling == true){
             ctrl3?.animateTo( //esto hace autoscroll en TextFormField junto con SingleChildScrollView
               ctrl3!.position.maxScrollExtent,
@@ -110,6 +110,18 @@ class _UdpCommunicationState extends State<UdpCommunication> {
     await Future.delayed(const Duration(milliseconds: 500));
     udp!.send([0x38], addresesToSend, port); //apagar ambientador
     airFresh = false;
+  }
+
+  Future<void> getValues(String string) async {
+    String? result;
+    int indexI = string.indexOf(":");
+    int indexF = string.lastIndexOf("-");
+    result = string.substring(indexI + 2, indexF - 1);
+    ozoneValuePPM = double.parse(result); //convertir niveles de ozono (ppm) de string a double
+
+    indexI = string.lastIndexOf(":");
+    result = string.substring(indexI + 2, string.length);
+    ozoneValuePPB = double.parse(result); //convertir niveles de ozono (ppb) de string a double
   }
 
   @override
@@ -165,7 +177,7 @@ class _UdpCommunicationState extends State<UdpCommunication> {
                     width: 60.0,
                     child: TextFormField(
                       readOnly: true,
-                      controller: ctrl1,
+                      controller: ctrl1!, //por aca
                     ),
                   ),
                   ElevatedButton(
@@ -368,7 +380,7 @@ class _UdpCommunicationState extends State<UdpCommunication> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   (isConnect == true) ?
-                  (valueOzoneLevel <= 0) ? 
+                  (ozoneValuePPM <= 0.0) ? 
                     WarningMessage(title: "Ambiente Seguro", col: Colors.green): 
                     WarningMessage(title: "Peligro Ozono en el ambiente", col: Colors.red):
                     WarningMessage(title: "", col: Colors.black),
