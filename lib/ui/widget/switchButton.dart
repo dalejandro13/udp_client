@@ -24,55 +24,57 @@ class _SwitchButtonState extends State<SwitchButton> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FlutterSwitch(
-          showOnOff: true,
-          activeText: "ON",
-          inactiveText: "OFF",
-          value: (widget.module == 1) ? widget.d.ozone! : (widget.module == 2) ? widget.d.compresor! : (widget.module == 3) ? widget.d.ionize! : widget.d.airFresh!,
-          onToggle: (value){
-            if(widget.d.udp != null){
-              if(widget.module == 1){
-                widget.d.ozone = value;
-                if (widget.d.ozone!) {
-                  widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ozono
-                } 
-                else {
-                  widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ozono
+        Expanded(
+          flex: 1,
+          child: FlutterSwitch(
+            showOnOff: true,
+            activeText: "ON",
+            inactiveText: "OFF",
+            value: (widget.module == 1) ? widget.d.ozone! : (widget.module == 2) ? widget.d.compresor! : (widget.module == 3) ? widget.d.ionize! : widget.d.airFresh!,
+            onToggle: (value){
+              if(widget.d.udp != null){
+                if(widget.module == 1){
+                  widget.d.ozone = value;
+                  if (widget.d.ozone!) {
+                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ozono
+                  } 
+                  else {
+                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ozono
+                  }
                 }
-              }
-              else if(widget.module == 2){
-                widget.d.compresor = value;
-                if (widget.d.compresor!) {
-                  widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo compresor
-                } 
-                else {
-                  widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo compresor
+                else if(widget.module == 2){
+                  widget.d.compresor = value;
+                  if (widget.d.compresor!) {
+                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo compresor
+                  } 
+                  else {
+                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo compresor
+                  }
                 }
-              }
-              else if(widget.module == 3){
-                widget.d.ionize = value;
-                if (widget.d.ionize!) {
-                  widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ionizar
-                } 
-                else {
-                  widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ionizar
+                else if(widget.module == 3){
+                  widget.d.ionize = value;
+                  if (widget.d.ionize!) {
+                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ionizar
+                  } 
+                  else {
+                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ionizar
+                  }
                 }
-              }
-              else{
-                widget.d.airFresh = value;
-                if (widget.d.airFresh!) {
-                  widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ambientador
-                } 
-                else {
-                  widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ambientador
+                else{
+                  widget.d.airFresh = value;
+                  if (widget.d.airFresh!) {
+                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ambientador
+                  } 
+                  else {
+                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ambientador
+                  }
                 }
               }
             }
-          }
+          ),
         ),
-        Text(widget.title),
+        Expanded(flex:1, child: Text(widget.title)),
       ],
     );
   }

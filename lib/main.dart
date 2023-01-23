@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
-import 'package:udp_client/ui/widget/actionButton.dart';
 import 'package:udp_client/ui/widget/scrollEnable.dart';
 import 'package:udp_client/ui/widget/scrollText.dart';
 import 'package:udp_client/ui/widget/switchButton.dart';
+import 'package:udp_client/ui/widget/upperScreen1.dart';
+import 'package:udp_client/ui/widget/upperScreen2.dart';
 import 'package:udp_client/ui/widget/warningMessage.dart';
 import 'package:provider/provider.dart';
 
@@ -33,9 +35,9 @@ class _UdpCommunicationState extends State<UdpCommunication> {
   @override
   void initState() {
     super.initState();
-     WidgetsBinding.instance?.addPostFrameCallback((time) {
+    WidgetsBinding.instance.addPostFrameCallback((time) {
       ProviderData d = Provider.of<ProviderData>(context, listen: false);
-        d.ctrl1!.text = d.addressesIListenFrom.address;
+      d.ctrl1!.text = d.addressesIListenFrom.address;
     });
   }
 
@@ -55,51 +57,13 @@ class _UdpCommunicationState extends State<UdpCommunication> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Padding(padding: EdgeInsets.only(top:25.0),),
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: SizedBox(
-                      height: 25.0,
-                      width: 200.0,
-                      child: Text("Puerto: ${data.port}")
-                    ),
-                  ),
-                  const SizedBox(width: 15.0),
-                  ButtonActions("Limpiar pantalla", 1, data),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8.0),
-                    child: Text("Direccion IP: "),
-                  ),
-                  SizedBox(
-                    height: 15.0,
-                    width: 60.0,
-                    child: TextFormField(
-                      readOnly: true,
-                      controller: data.ctrl1,
-                    ),
-                  ),
-                  ButtonActions("Conectar", 2, data),
-                  ButtonActions("Desconectar\n       todo", 3, data),
-                ],
-              ),
-            ),
+            //const Padding(padding: EdgeInsets.only(top:25.0),),
+            const UpperScreen1(),
+            const UpperScreen2(),
             ScrollText(data),
             ScrollEnable(data),
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -123,7 +87,7 @@ class _UdpCommunicationState extends State<UdpCommunication> {
                 ],
               ),
             ),
-            const Padding(padding: EdgeInsets.only(top:25.0),),
+            //const Padding(padding: EdgeInsets.only(top:25.0),),
           ],
         ),
       ),
