@@ -29,6 +29,10 @@ class ButtonActions extends StatelessWidget {
               if(data.ctrl1!.text.isNotEmpty){
                 if('.'.allMatches(data.ctrl1!.text).length == 3){
                   await startComm(data);
+                  if(soundStart == true){
+                    soundStart = false;
+                    await sendStartSound(data);
+                  }
                 }
               }
               else{

@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
 
-
-bool closing = false;
+bool closing = false, soundStart = false;
 
 Future<void> startComm(ProviderData data) async {
   RawDatagramSocket.bind(data.addressesIListenFrom, data.port).then((RawDatagramSocket? socket) async {
@@ -14,6 +13,7 @@ Future<void> startComm(ProviderData data) async {
       data.udp = socket;
       data.isConnect = true;
       closing = true;
+      soundStart = true;
       socket!.listen((RawSocketEvent e) async {
         Datagram? datagram = socket!.receive();
         if (datagram == null) return;
@@ -40,12 +40,14 @@ Future<void> startComm(ProviderData data) async {
             socket = null;
             data.udp = null;
             datagram = null;
+            soundStart = false;
           }
         }
       });
     }
     catch(e){
       log("ERROR1: $e");
+      soundStart = false;
     }
   });
 }
@@ -62,6 +64,10 @@ Future<void> getValues(String string, ProviderData data) async {
   data.ozoneValuePPB = double.parse(result); //convertir niveles de ozono (ppb) de string a double
 }
 
+Future<void> sendStartSound(ProviderData data) async {
+  data.udp!.send([0x34, 0x30], data.addresesToSend, data.port); //apagar todo
+}
+
 Future<void> closeComm(ProviderData data) async {
   if(data.udp != null){
     data.isConnect = false;
@@ -69,15 +75,10 @@ Future<void> closeComm(ProviderData data) async {
 }
 
 Future<void> turnOffAll(ProviderData data) async {
-  data.udp!.send([0x35], data.addresesToSend, data.port); //apagar ozono
+  data.udp!.send([0x39], data.addresesToSend, data.port); //apagar todo
   data.ozone = false;
-  await Future.delayed(const Duration(milliseconds: 50));
-  data.udp!.send([0x36], data.addresesToSend, data.port); //apagar compresor
   data.compresor = false;
-  await Future.delayed(const Duration(milliseconds: 50));
-  data.udp!.send([0x37], data.addresesToSend, data.port); //apagar ionizar
   data.ionize = false;
-  await Future.delayed(const Duration(milliseconds: 50));
-  data.udp!.send([0x38], data.addresesToSend, data.port); //apagar ambientador
   data.airFresh = false;
+  await Future.delayed(const Duration(milliseconds: 1000));
 }
