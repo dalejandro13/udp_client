@@ -4,8 +4,7 @@ import 'package:udp_client/bloc/providerData.dart';
 import 'package:udp_client/ui/widget/scrollEnable.dart';
 import 'package:udp_client/ui/widget/scrollText.dart';
 import 'package:udp_client/ui/widget/switchButton.dart';
-import 'package:udp_client/ui/widget/upperScreen1.dart';
-import 'package:udp_client/ui/widget/upperScreen2.dart';
+import 'package:udp_client/ui/widget/upperScreen.dart';
 import 'package:udp_client/ui/widget/warningMessage.dart';
 import 'package:provider/provider.dart';
 
@@ -57,9 +56,7 @@ class _UdpCommunicationState extends State<UdpCommunication> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            //const Padding(padding: EdgeInsets.only(top:25.0),),
-            const UpperScreen1(),
-            const UpperScreen2(),
+            const UpperScreen(),
             ScrollText(data),
             ScrollEnable(data),
             Expanded(
