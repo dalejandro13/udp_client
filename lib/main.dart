@@ -77,7 +77,7 @@ class _UdpCommunicationState extends State<UdpCommunication> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   (data.isConnect == true) ?
-                  (data.ozoneValuePPM <= 0.0) ? 
+                  (data.ozoneValuePPM <= 0.0 && data.takeMeasure == true) ? 
                     WarningMessage("Ambiente Seguro", Colors.green): 
                     WarningMessage("Peligro Ozono en el ambiente", Colors.red):
                     WarningMessage("", Colors.black),

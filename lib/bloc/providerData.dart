@@ -11,8 +11,9 @@ class ProviderData with ChangeNotifier{
   InternetAddress addressesIListenFrom = InternetAddress.anyIPv4;
   InternetAddress addresesToSend = InternetAddress("192.168.2.1");
   int port = 9742; //0 is random
+  int _start = 0;
 
-  bool? _conection1 = false, _oz = false, _comp = false, _ion = false, _air = false, _scroll = true;
+  bool? _conection1 = false, _oz = false, _comp = false, _ion = false, _air = false, _scroll = true, _measure = false;
 
   RawDatagramSocket? _udpDatagram;
 
@@ -91,6 +92,12 @@ class ProviderData with ChangeNotifier{
     notifyListeners();
   }
 
+  bool? get takeMeasure => _measure;
+  set takeMeasure(bool? value){
+    _measure = value;
+    notifyListeners();
+  }
+
 //////////////////////////////////////////
 
 
@@ -101,6 +108,14 @@ class ProviderData with ChangeNotifier{
     notifyListeners();
   }
 ///////////////////////////////////////////////////////
+
+/////////////////*variables de tipo entero*///////////////////
+  int get startTimer => _start;
+  set startTimer(int value){
+    _start = value;
+    notifyListeners();
+  }
+/////////////////////////////////////////////////////////////
 
 
 }
