@@ -21,14 +21,24 @@ Future<void> startComm(ProviderData data) async {
         String message = String.fromCharCodes(datagram.data).trim();
         //log('Datagram from ${d.address.address}:${d.port}\n');
         //log('message: $message\n');
-        data.ctrl2?.text += "$message\n";
-        await getValues(message, data);
-        if(data.scrolling == true){
-          data.ctrl3?.animateTo( //esto hace autoscroll en TextFormField junto con SingleChildScrollView
-            data.ctrl3!.position.maxScrollExtent,
-            curve: Curves.easeOutBack,
-            duration: const Duration(milliseconds: 100),
-          );
+
+        if(message.contains("start")){ //llega comando de arranque de parte del ESP
+          data.ozone = true;
+          data.udp!.send([0x31], data.addresesToSend, data.port); //encender modulo ozono
+          await Future.delayed(const Duration(milliseconds: 1000));
+          data.compresor = true;
+          data.udp!.send([0x32], data.addresesToSend, data.port); //encender modulo compresor
+        }
+        else{ //llega informacion del sensor
+          data.ctrl2?.text += "$message\n";
+          await getValues(message, data);
+          if(data.scrolling == true){
+            data.ctrl3?.animateTo( //esto hace autoscroll en TextFormField junto con SingleChildScrollView
+              data.ctrl3!.position.maxScrollExtent,
+              curve: Curves.easeOutBack,
+              duration: const Duration(milliseconds: 100),
+            );
+          }
         }
 
         if(data.isConnect == false){
@@ -65,7 +75,7 @@ Future<void> getValues(String string, ProviderData data) async {
 }
 
 Future<void> sendStartSound(ProviderData data) async {
-  data.udp!.send([0x34, 0x30], data.addresesToSend, data.port); //apagar todo
+  data.udp!.send([0x41], data.addresesToSend, data.port); //enviar comando para que el ESP reproduzca sonido de inicio
 }
 
 Future<void> closeComm(ProviderData data) async {
