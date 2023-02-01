@@ -25,3 +25,22 @@ class _WarningMessageState extends State<WarningMessage> {
     );
   }
 }
+
+Future<void> showMessage(BuildContext context) async {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(
+    SnackBar(
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 100,
+        child: const Text(
+          '\nNo hay conexion por Wi-Fi con el dispositivo',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        )
+      ),
+      action: SnackBarAction(label: 'CERRAR', onPressed: scaffold.hideCurrentSnackBar),
+    ),
+  );
+}

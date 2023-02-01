@@ -1,63 +1,56 @@
-import 'dart:developer';
+import 'dart:async';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
 
-bool closing = false, soundStart = false;
+Timer? timer;
 
 Future<void> startComm(ProviderData data) async {
-  RawDatagramSocket.bind(data.addressesIListenFrom, data.port).then((RawDatagramSocket? socket) async {
-    try{
-      // log('Datagram socket ready to receive');
-      // log('${socket!.address.address}:${socket.port}');
-      data.udp = socket;
+  data.socket = await RawDatagramSocket.bind(data.addressesIListenFrom, data.port);    
+  data.socket!.listen((RawSocketEvent e) async {
+    Datagram? datagram = data.socket!.receive();
+    if (datagram == null) return;
+
+    if(data.isReceiving == true){
+      data.isReceiving = false;
       data.isConnect = true;
-      closing = true;
-      soundStart = true;
-      socket!.listen((RawSocketEvent e) async {
-        Datagram? datagram = socket!.receive();
-        if (datagram == null) return;
-
-        String message = String.fromCharCodes(datagram.data).trim();
-        //log('Datagram from ${d.address.address}:${d.port}\n');
-        //log('message: $message\n');
-
-        if(message.contains("start")){ //llega comando de arranque de parte del ESP
-          data.ozone = true;
-          data.udp!.send([0x31], data.addresesToSend, data.port); //encender modulo ozono
-          await Future.delayed(const Duration(milliseconds: 1000));
-          data.compresor = true;
-          data.udp!.send([0x32], data.addresesToSend, data.port); //encender modulo compresor
-        }
-        else{ //llega informacion del sensor
-          data.ctrl2?.text += "$message\n";
-          await getValues(message, data);
-          if(data.scrolling == true){
-            data.ctrl3?.animateTo( //esto hace autoscroll en TextFormField junto con SingleChildScrollView
-              data.ctrl3!.position.maxScrollExtent,
-              curve: Curves.easeOutBack,
-              duration: const Duration(milliseconds: 100),
-            );
-          }
-        }
-
-        if(data.isConnect == false){
-          if(closing == true){
-            await turnOffAll(data);
-            closing = false;
-            socket!.close();
-            data.udp!.close();
-            socket = null;
-            data.udp = null;
-            datagram = null;
-            soundStart = false;
-          }
-        }
-      });
+      data.closing = true;
+      data.enableSwitch = true;
     }
-    catch(e){
-      log("ERROR1: $e");
-      soundStart = false;
+
+    String message = String.fromCharCodes(datagram.data).trim();
+
+    if (message.contains("start")) { //llega comando de arranque de parte del ESP
+      data.ozone = true;
+      data.socket!.send([0x31], data.addresesToSend, data.port); //encender modulo ozono
+      await Future.delayed(const Duration(milliseconds: 1000));
+      data.compresor = true;
+      data.socket!.send([0x32], data.addresesToSend, data.port); //encender modulo compresor
+    } 
+    else { //llega informacion del sensor
+      data.ctrl2?.text += "$message\n";
+      await getValues(message, data);
+      if (data.scrolling == true) {
+        data.ctrl3?.animateTo(// esto hace autoscroll en TextFormField junto con SingleChildScrollView
+          data.ctrl3!.position.maxScrollExtent,
+          curve: Curves.easeOutBack,
+          duration: const Duration(milliseconds: 100),
+        );
+      }
+    }
+
+    if (data.isConnect == false) {
+      if (data.closing == true) {
+        await turnOffAll(data);
+        data.closing = false;
+        data.socket!.close();
+        //data.socket = null;
+        datagram = null;
+        data.startTimer = 0;
+        data.enterOnce = true;
+        data.enableSwitch = false;
+      }
     }
   });
 }
@@ -75,20 +68,46 @@ Future<void> getValues(String string, ProviderData data) async {
 }
 
 Future<void> sendStartSound(ProviderData data) async {
-  data.udp!.send([0x41], data.addresesToSend, data.port); //enviar comando para que el ESP reproduzca sonido de inicio
+  data.socket!.send([0x41], data.addresesToSend, data.port); //enviar comando para que el ESP reproduzca sonido de inicio
 }
 
 Future<void> closeComm(ProviderData data) async {
-  if(data.udp != null){
+  if (data.socket != null) {
     data.isConnect = false;
   }
 }
 
 Future<void> turnOffAll(ProviderData data) async {
-  data.udp!.send([0x39], data.addresesToSend, data.port); //apagar todo
+  data.socket!.send([0x39], data.addresesToSend, data.port); //apagar todo
   data.ozone = false;
   data.compresor = false;
   data.ionize = false;
   data.airFresh = false;
   await Future.delayed(const Duration(milliseconds: 1000));
+}
+
+Future<void> sTimer(ProviderData data) async {
+  timer = Timer.periodic(
+    const Duration(seconds: 1),
+    (Timer timer) {
+      if (data.startTimer == 0) {
+        data.takeMeasure = true;
+        timer.cancel();
+      } 
+      else {
+        data.startTimer--;
+      }
+    },
+  );
+}
+
+Future<void> isWifiActive(ProviderData data) async {
+  ConnectivityResult? _connectivityResult;
+  final ConnectivityResult result = await Connectivity().checkConnectivity();
+  if (result == ConnectivityResult.wifi) {
+    data.soundStart = true;
+  } 
+  else {
+    data.soundStart = false;
+  }
 }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
 import 'package:udp_client/ui/widget/scrollEnable.dart';
@@ -31,10 +30,11 @@ class UdpCommunication extends StatefulWidget {
 }
 
 class _UdpCommunicationState extends State<UdpCommunication> {
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((time) {
+    WidgetsBinding.instance.addPostFrameCallback((time) async {
       ProviderData d = Provider.of<ProviderData>(context, listen: false);
       d.ctrl1!.text = d.addressesIListenFrom.address;
     });

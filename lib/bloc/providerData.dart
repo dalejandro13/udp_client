@@ -10,12 +10,15 @@ class ProviderData with ChangeNotifier{
 
   InternetAddress addressesIListenFrom = InternetAddress.anyIPv4;
   InternetAddress addresesToSend = InternetAddress("192.168.2.1");
+
   int port = 9742; //0 is random
-  int _start = 0;
+  int _startCount = 0;
 
-  bool? _conection1 = false, _oz = false, _comp = false, _ion = false, _air = false, _scroll = true, _measure = false;
+  bool? _conection1 = false, _oz = false, _comp = false, _ion = false, _air = false, 
+        _scroll = true, _measure = false, _connect = false, _cl = false, _sds = false,
+        _rec = false, _once = true, _sw = false;
 
-  RawDatagramSocket? _udpDatagram;
+  RawDatagramSocket? _sock;
 
   double _ozoneValue1 = 0.0, _ozoneValue2 = 0.0;
 
@@ -98,23 +101,60 @@ class ProviderData with ChangeNotifier{
     notifyListeners();
   }
 
+  bool? get isConnected => _connect;
+  set isConnected(bool? value){
+    _connect = value;
+    notifyListeners();
+  }
+
+  bool? get closing => _cl;
+  set closing(bool? value){
+    _cl = value;
+    notifyListeners();
+  }
+
+  bool? get soundStart => _sds;
+  set soundStart(bool? value){
+    _sds = value;
+    notifyListeners();
+  }
+
+  bool? get isReceiving => _rec;
+  set isReceiving(bool? value){
+    _rec = value;
+    notifyListeners();
+  }
+
+  bool? get enterOnce => _once;
+  set enterOnce(bool? value){
+    _once = value;
+    notifyListeners();
+  }
+
+  bool? get enableSwitch => _sw;
+  set enableSwitch(bool? value){
+    _sw = value;
+    notifyListeners();
+  }
+
 //////////////////////////////////////////
 
 
 ////////////*variables RawDatagramSocket*//////////////
-  RawDatagramSocket? get udp => _udpDatagram;
-  set udp(RawDatagramSocket? value){
-    _udpDatagram = value;
+  RawDatagramSocket? get socket => _sock;
+  set socket(RawDatagramSocket? value){
+    _sock = value;
     notifyListeners();
   }
 ///////////////////////////////////////////////////////
 
 /////////////////*variables de tipo entero*///////////////////
-  int get startTimer => _start;
+  int get startTimer => _startCount;
   set startTimer(int value){
-    _start = value;
+    _startCount = value;
     notifyListeners();
   }
+
 /////////////////////////////////////////////////////////////
 
 

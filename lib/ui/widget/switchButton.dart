@@ -1,18 +1,13 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:udp_client/bloc/providerData.dart';
+import 'package:udp_client/repository/communication.dart';
 
 class SwitchButton extends StatefulWidget {
   String title;
   List<int> data, data2;
   ProviderData d;
   int module;
-
-  Timer? timer;
-  bool stopTimer = false;
 
   SwitchButton( 
     this.title,
@@ -28,21 +23,6 @@ class SwitchButton extends StatefulWidget {
 
 class _SwitchButtonState extends State<SwitchButton> {
 
-  Future<void> sTimer() async {
-    widget.timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer timer) {
-        if (widget.d.startTimer == 0) {
-          widget.d.takeMeasure = true;
-          timer.cancel();
-        }
-        else {
-          widget.d.startTimer--;
-        }
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -55,44 +35,45 @@ class _SwitchButtonState extends State<SwitchButton> {
             inactiveText: "OFF",
             value: (widget.module == 1) ? widget.d.ozone! : (widget.module == 2) ? widget.d.compresor! : (widget.module == 3) ? widget.d.ionize! : widget.d.airFresh!,
             onToggle: (value) async {
-              if(widget.d.udp != null){
+              if(widget.d.enableSwitch == true){
                 if(widget.module == 1){
                   widget.d.ozone = value;
                   if (widget.d.ozone!) {
-                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ozono
-                    widget.d.startTimer = 10;
-                    await sTimer(); //inicia el timer
+                    widget.d.socket!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ozono
+                    widget.d.startTimer = 30;
+                    widget.d.takeMeasure = false;
+                    await sTimer(widget.d); //inicia el timer
                   } 
                   else {
-                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ozono
+                    widget.d.socket!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ozono
                     widget.d.startTimer = 0; //apaga el timer
                   }
                 }
                 else if(widget.module == 2){
                   widget.d.compresor = value;
                   if (widget.d.compresor!) {
-                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo compresor
+                    widget.d.socket!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo compresor
                   } 
                   else {
-                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo compresor
+                    widget.d.socket!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo compresor
                   }
                 }
                 else if(widget.module == 3){
                   widget.d.ionize = value;
                   if (widget.d.ionize!) {
-                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ionizar
+                    widget.d.socket!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ionizar
                   } 
                   else {
-                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ionizar
+                    widget.d.socket!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ionizar
                   }
                 }
                 else{
                   widget.d.airFresh = value;
                   if (widget.d.airFresh!) {
-                    widget.d.udp!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ambientador
+                    widget.d.socket!.send(widget.data, widget.d.addresesToSend, widget.d.port); //encender modulo ambientador
                   } 
                   else {
-                    widget.d.udp!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ambientador
+                    widget.d.socket!.send(widget.data2, widget.d.addresesToSend, widget.d.port); //apagar modulo ambientador
                   }
                 }
               }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
 import 'package:udp_client/repository/communication.dart';
@@ -26,18 +25,18 @@ class ButtonActions extends StatelessWidget {
         (value == 2) ? //conectar
           (data.isConnect == false) ? 
             () async {
-              if(data.ctrl1!.text.isNotEmpty){
-                if('.'.allMatches(data.ctrl1!.text).length == 3){
-                  await startComm(data);
-                  if(soundStart == true){
-                    soundStart = false;
-                    await sendStartSound(data);
-                  }
-                }
-              }
-              else{
-                log("debes ingresar la direccion ip");
-              }
+              // if(data.ctrl1!.text.isNotEmpty){
+              //   if('.'.allMatches(data.ctrl1!.text).length == 3){
+              //     await startComm(data);
+              //     if(data.soundStart == true){
+              //       data.soundStart = false;
+              //       await sendStartSound(data);
+              //     }
+              //   }
+              // }
+              // else{
+              //   log("debes ingresar la direccion ip");
+              // }
             } :
             null :
           (data.isConnect == true) ? () async { //desconectar todo

@@ -1,11 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:udp_client/bloc/providerData.dart';
 import 'package:udp_client/repository/communication.dart';
+import 'package:udp_client/ui/widget/warningMessage.dart';
 
 class CircularGreenButton extends StatelessWidget {
   String title;
@@ -34,12 +31,17 @@ class CircularGreenButton extends StatelessWidget {
       ),
       onPressed: (data.isConnect == false) ? () async {
         if(data.ctrl1!.text.isNotEmpty){
-          if('.'.allMatches(data.ctrl1!.text).length == 3){
+          data.isReceiving = true;
+          await isWifiActive(data);
+          if(data.enterOnce == true){
             await startComm(data);
-            if(soundStart == true){
-              soundStart = false;
-              await sendStartSound(data);
-            }
+          }
+          if(data.soundStart == true){
+            data.soundStart = false;
+            await sendStartSound(data);
+          }
+          else{
+            await showMessage(context);
           }
         }
         else{
