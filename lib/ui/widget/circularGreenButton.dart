@@ -33,10 +33,10 @@ class CircularGreenButton extends StatelessWidget {
         if(data.ctrl1!.text.isNotEmpty){
           data.isReceiving = true;
           await isWifiActive(data);
-          if(data.enterOnce == true){
-            await startComm(data);
-          }
           if(data.soundStart == true){
+            if(data.enterOnce == true){
+              await startComm(data);
+            }
             data.soundStart = false;
             await sendStartSound(data);
           }

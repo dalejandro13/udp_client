@@ -73,18 +73,10 @@ class _UdpCommunicationState extends State<UdpCommunication> {
             ),
             Expanded(
               flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  (data.isConnect == true) ?
-                  (data.ozoneValuePPM <= 0.0 && data.takeMeasure == true) ? 
-                    WarningMessage("Ambiente Seguro", Colors.green): 
-                    WarningMessage("Peligro Ozono en el ambiente", Colors.red):
-                    WarningMessage("", Colors.black),
-                ],
+              child: Center(
+                child: statusMessage(data),
               ),
             ),
-            //const Padding(padding: EdgeInsets.only(top:25.0),),
           ],
         ),
       ),

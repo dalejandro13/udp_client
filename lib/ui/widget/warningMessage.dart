@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:udp_client/bloc/providerData.dart';
 
 class WarningMessage extends StatefulWidget {
   String title;
@@ -43,4 +44,33 @@ Future<void> showMessage(BuildContext context) async {
       action: SnackBarAction(label: 'CERRAR', onPressed: scaffold.hideCurrentSnackBar),
     ),
   );
+}
+
+Widget? statusMessage(ProviderData data) {
+  if (data.isConnect == true){
+    if(data.ozoneValuePPM > 0.0){
+      if((data.takeMeasure == false && data.ozone == true) || (data.takeMeasure == true && data.ozone == true)){
+        return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
+      }
+      else{
+        return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
+      }
+    }
+    else if(data.ozoneValuePPM <= 0.0){
+      if(data.takeMeasure == false){
+        return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
+      }
+      else{
+        if (data.ozone == false){
+          return WarningMessage("Ambiente Seguro", Colors.green);
+        }
+        else{
+          return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
+        }
+      }
+    }
+  }
+  else{
+    return WarningMessage("", Colors.black);
+  }
 }
