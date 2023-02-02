@@ -46,7 +46,7 @@ Future<void> showMessage(BuildContext context) async {
   );
 }
 
-Widget? statusMessage(ProviderData data) {
+WarningMessage? statusMessage(ProviderData data) {
   if (data.isConnect == true){
     if(data.ozoneValuePPM > 0.0){
       if((data.takeMeasure == false && data.ozone == true) || (data.takeMeasure == true && data.ozone == true)){
@@ -68,6 +68,9 @@ Widget? statusMessage(ProviderData data) {
           return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
         }
       }
+    }
+    else{
+      return WarningMessage("", Colors.black);
     }
   }
   else{

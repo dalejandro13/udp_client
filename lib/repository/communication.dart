@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
-import 'package:udp_client/ui/widget/warningMessage.dart';
+import 'package:http/http.dart' as http;
 
 Timer? timer;
 
@@ -42,8 +41,6 @@ Future<void> startComm(ProviderData data) async {
           );
         }
       }
-
-      
     });
   }
   catch(e){
@@ -91,7 +88,7 @@ Future<void> sTimer(ProviderData data) async {
   timer = Timer.periodic(
     const Duration(seconds: 1),
     (Timer timer) {
-      if (data.startTimer == 0) {
+      if (data.startTimer <= 0) {
         data.takeMeasure = true;
         timer.cancel();
       } 
@@ -104,12 +101,31 @@ Future<void> sTimer(ProviderData data) async {
 }
 
 Future<void> isWifiActive(ProviderData data) async {
-  ConnectivityResult? _connectivityResult;
-  final ConnectivityResult result = await Connectivity().checkConnectivity();
-  if (result == ConnectivityResult.wifi) {
-    data.soundStart = true;
-  } 
-  else {
+  // ConnectivityResult? _connectivityResult;
+  // final ConnectivityResult result = await Connectivity().checkConnectivity();
+  // if (result == ConnectivityResult.wifi) {
+  //   data.soundStart = true;
+  // } 
+  // else {
+  //   data.soundStart = false;
+  // }
+
+  try{
+    dynamic response = await http.get(Uri.parse('http://192.168.2.1/consult')).timeout(const Duration(seconds: 3));
+    if (response.statusCode == 200) {
+      if(response.body.toString().contains("Medidor De Ozono")){
+        data.soundStart = true;
+      }
+      else{
+        data.soundStart = false;
+      }
+    } 
+    else {
+      data.soundStart = false;
+    }
+  }
+  catch(e){
+    log("ERROR CONSULTA HTTP: $e");
     data.soundStart = false;
   }
 }
