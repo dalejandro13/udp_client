@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:udp_client/bloc/providerData.dart';
+import 'package:udp_client/ui/widget/dropDown.dart';
 import 'package:udp_client/ui/widget/scrollEnable.dart';
 import 'package:udp_client/ui/widget/scrollText.dart';
 import 'package:udp_client/ui/widget/switchButton.dart';
@@ -47,6 +48,9 @@ class _UdpCommunicationState extends State<UdpCommunication> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Flexolumens"),
+        actions: const [
+          DropButton()
+        ],
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overScroll){

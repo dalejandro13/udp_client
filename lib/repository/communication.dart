@@ -94,7 +94,6 @@ Future<void> sTimer(ProviderData data) async {
       } 
       else {
         data.startTimer--;
-        log("timer: ${data.startTimer}");
       }
     },
   );
@@ -125,7 +124,6 @@ Future<void> isWifiActive(ProviderData data) async {
     }
   }
   catch(e){
-    log("ERROR CONSULTA HTTP: $e");
     data.soundStart = false;
   }
 }

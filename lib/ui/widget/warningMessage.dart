@@ -29,6 +29,7 @@ class _WarningMessageState extends State<WarningMessage> {
 
 Future<void> showMessage(BuildContext context) async {
   final scaffold = ScaffoldMessenger.of(context);
+  scaffold.removeCurrentSnackBar(); //con esto se cierra el snackbar actual y se abre nuevamente
   scaffold.showSnackBar(
     SnackBar(
       content: SizedBox(
@@ -57,16 +58,14 @@ WarningMessage? statusMessage(ProviderData data) {
       }
     }
     else if(data.ozoneValuePPM <= 0.0){
-      if(data.takeMeasure == false){
+      if(data.takeMeasure == false && data.ozone == true){
         return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
       }
+      else if (data.takeMeasure == true && data.ozone == false) {
+        return WarningMessage("Ambiente Seguro", Colors.green);
+      }
       else{
-        if (data.ozone == false){
-          return WarningMessage("Ambiente Seguro", Colors.green);
-        }
-        else{
-          return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
-        }
+        return WarningMessage("Peligro Ozono En El Ambiente", Colors.red);
       }
     }
     else{
@@ -76,4 +75,38 @@ WarningMessage? statusMessage(ProviderData data) {
   else{
     return WarningMessage("", Colors.black);
   }
+}
+
+Future<void> messageBox(BuildContext context) async {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (ctx) => AlertDialog(
+      title: const Center(child: Text("Controlador Ozono")),
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: 70.0,
+            width: 70.0,
+            child: Image.asset('assets\\images\\iconFlexo.png')
+          ),
+          const Text("Flexolumens\nderechos reservados\n2022 - 2023\n\nversion 1.0.0"),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () { Navigator.of(ctx).pop(); },
+          child: const Center(
+            child: Text(
+              "OK",
+              style: TextStyle(
+                fontSize: 17.0,
+              ),
+            )
+          ),
+        ),
+      ],
+    ),
+  );
 }

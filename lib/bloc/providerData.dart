@@ -15,7 +15,7 @@ class ProviderData with ChangeNotifier{
   int _startCount = 0;
 
   bool? _conection1 = false, _oz = false, _comp = false, _ion = false, _air = false, 
-        _scroll = true, _measure = false, _connect = false, _sds = false, 
+        _scroll = true, _measure = true, _connect = false, _sds = false, 
         _rec = false, _once = true, _sw = false;
 
   RawDatagramSocket? _sock;
