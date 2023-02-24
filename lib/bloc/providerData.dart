@@ -16,7 +16,7 @@ class ProviderData with ChangeNotifier{
 
   bool? _conection1 = false, _oz = false, _comp = false, _ion = false, _air = false, 
         _scroll = true, _measure = true, _connect = false, _sds = false, 
-        _rec = false, _once = true, _sw = false;
+        _rec = false, _once = true, _sw = false, _off = true;
 
   RawDatagramSocket? _sock;
 
@@ -134,6 +134,12 @@ class ProviderData with ChangeNotifier{
   bool? get enableSwitch => _sw;
   set enableSwitch(bool? value){
     _sw = value;
+    notifyListeners();
+  }
+
+  bool? get avoidPlaySound => _off;
+  set avoidPlaySound(bool? value){
+    _off = value;
     notifyListeners();
   }
 

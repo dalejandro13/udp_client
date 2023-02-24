@@ -36,9 +36,12 @@ class CircularGreenButton extends StatelessWidget {
           if(data.soundStart == true){
             if(data.enterOnce == true){
               await startComm(data);
+              await requestUpdateState(data);
             }
             data.soundStart = false;
-            await sendStartSound(data);
+            if(data.avoidPlaySound == true){
+              await sendStartSound(data);
+            }
           }
           else{
             await showMessage(context);

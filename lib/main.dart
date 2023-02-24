@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:udp_client/bloc/providerData.dart';
 import 'package:udp_client/ui/widget/dropDown.dart';
 import 'package:udp_client/ui/widget/scrollEnable.dart';
@@ -30,7 +32,9 @@ class UdpCommunication extends StatefulWidget {
   State<UdpCommunication> createState() => _UdpCommunicationState();
 }
 
-class _UdpCommunicationState extends State<UdpCommunication> {
+class _UdpCommunicationState extends State<UdpCommunication> with WidgetsBindingObserver {
+
+  AppLifecycleState? _notification;
 
   @override
   void initState() {
@@ -39,6 +43,12 @@ class _UdpCommunicationState extends State<UdpCommunication> {
       ProviderData d = Provider.of<ProviderData>(context, listen: false);
       d.ctrl1!.text = d.addressesIListenFrom.address;
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

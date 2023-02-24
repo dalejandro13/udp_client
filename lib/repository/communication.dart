@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:udp_client/bloc/providerData.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,12 +25,35 @@ Future<void> startComm(ProviderData data) async {
       message = String.fromCharCodes(datagram.data).trim();
 
       if (message.contains("start")) { //llega comando de arranque de parte del ESP
+        //solo dejar los bool
         data.ozone = true;
-        data.socket!.send([0x31], data.addresesToSend, data.port); //encender modulo ozono
-        await Future.delayed(const Duration(milliseconds: 1000));
+        //data.socket!.send([0x31], data.addresesToSend, data.port); //encender modulo ozono
+        //await Future.delayed(const Duration(milliseconds: 1000));
         data.compresor = true;
-        data.socket!.send([0x32], data.addresesToSend, data.port); //encender modulo compresor
-      } 
+        //data.socket!.send([0x32], data.addresesToSend, data.port); //encender modulo compresor
+      }
+      else if(message.contains("U:")){
+        if(message.length > 2){
+          Fluttertoast.showToast(
+              msg: "el mensaje: $message",
+              toastLength: Toast.LENGTH_LONG,
+              //gravity: ToastGravity.CENTER,
+          );
+          if(message.contains("31")){
+            data.ozone = true;
+          }
+          if(message.contains("32")){
+            data.compresor = true;
+          }
+          if(message.contains("33")){
+            data.ionize = true;
+          }
+          if(message.contains("34")){
+            data.airFresh = true;
+          }
+          data.avoidPlaySound = false;
+        }
+      }
       else { //llega informacion del sensor
         data.ctrl2?.text += "$message\n";
         await getValues(message, data);
@@ -46,6 +70,10 @@ Future<void> startComm(ProviderData data) async {
   catch(e){
     log("ERROR: $e");
   }
+}
+
+Future<void> requestUpdateState(ProviderData data) async {
+  data.socket!.send([0x55], data.addresesToSend, data.port); //envio la letra U para consultar estado de las variables
 }
 
 Future<void> getValues(String string, ProviderData data) async {
@@ -72,6 +100,7 @@ Future<void> closeComm(ProviderData data) async {
     data.startTimer = 0;
     data.enterOnce = true;
     data.enableSwitch = false;
+    data.avoidPlaySound = true;
   }
 }
 
