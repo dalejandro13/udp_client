@@ -34,25 +34,20 @@ Future<void> startComm(ProviderData data) async {
       }
       else if(message.contains("U:")){
         if(message.length > 2){
-          Fluttertoast.showToast(
-              msg: "el mensaje: $message",
-              toastLength: Toast.LENGTH_LONG,
-              //gravity: ToastGravity.CENTER,
-          );
-          if(message.contains("31")){
-            data.ozone = true;
-          }
-          if(message.contains("32")){
-            data.compresor = true;
-          }
-          if(message.contains("33")){
-            data.ionize = true;
-          }
-          if(message.contains("34")){
-            data.airFresh = true;
-          }
+          // Fluttertoast.showToast(
+          //     msg: "el mensaje: $message",
+          //     toastLength: Toast.LENGTH_LONG,
+          //     //gravity: ToastGravity.CENTER,
+          // );
+          if(message.contains("31")) data.ozone = true;
+          if(message.contains("32")) data.compresor = true;
+          if(message.contains("33")) data.ionize = true;
+          if(message.contains("34")) data.airFresh = true;
           data.avoidPlaySound = false;
         }
+      }
+      else if(message.contains("D:")){
+        await closeComm(data, false);
       }
       else { //llega informacion del sensor
         data.ctrl2?.text += "$message\n";
@@ -92,10 +87,10 @@ Future<void> sendStartSound(ProviderData data) async {
   data.socket!.send([0x41], data.addresesToSend, data.port); //enviar comando para que el ESP reproduzca sonido de inicio
 }
 
-Future<void> closeComm(ProviderData data) async {
+Future<void> closeComm(ProviderData data, bool send) async {
   if (data.socket != null) {
     data.isConnect = false;
-    await turnOffAll(data);
+    await turnOffAll(data, send);
     data.socket!.close();
     data.startTimer = 0;
     data.enterOnce = true;
@@ -104,8 +99,10 @@ Future<void> closeComm(ProviderData data) async {
   }
 }
 
-Future<void> turnOffAll(ProviderData data) async {
-  data.socket!.send([0x39], data.addresesToSend, data.port); //apagar todo
+Future<void> turnOffAll(ProviderData data, bool send) async {
+  if(send == true){ 
+    data.socket!.send([0x39], data.addresesToSend, data.port); //apagar todo
+  }
   data.ozone = false;
   data.compresor = false;
   data.ionize = false;

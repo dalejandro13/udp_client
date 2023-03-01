@@ -40,7 +40,7 @@ class ButtonActions extends StatelessWidget {
             } :
             null :
           (data.isConnect == true) ? () async { //desconectar todo
-            await closeComm(data);
+            await closeComm(data, true);
           } : null
     );
   }
