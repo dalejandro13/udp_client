@@ -34,12 +34,12 @@ class CircularGreenButton extends StatelessWidget {
           data.isReceiving = true;
           await isWifiActive(data);
           if(data.soundStart == true){
-            if(data.enterOnce == true){
+            if(data.enterOnce == true){ //con data.enterOnce, evito llamar multiples veces a RawDatagramSocket
               await startComm(data);
               await requestUpdateState(data);
             }
-            data.soundStart = false;
-            if(data.avoidPlaySound == true){
+            if(data.soundStart == true){
+              data.soundStart = false;
               await sendStartSound(data);
             }
           }

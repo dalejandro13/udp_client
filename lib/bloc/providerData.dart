@@ -107,12 +107,6 @@ class ProviderData with ChangeNotifier{
     notifyListeners();
   }
 
-  // bool? get closing => _cl;
-  // set closing(bool? value){
-  //   _cl = value;
-  //   notifyListeners();
-  // }
-
   bool? get soundStart => _sds;
   set soundStart(bool? value){
     _sds = value;
@@ -136,13 +130,6 @@ class ProviderData with ChangeNotifier{
     _sw = value;
     notifyListeners();
   }
-
-  bool? get avoidPlaySound => _off;
-  set avoidPlaySound(bool? value){
-    _off = value;
-    notifyListeners();
-  }
-
 //////////////////////////////////////////
 
 

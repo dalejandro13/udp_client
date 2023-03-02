@@ -34,16 +34,11 @@ Future<void> startComm(ProviderData data) async {
       }
       else if(message.contains("U:")){
         if(message.length > 2){
-          // Fluttertoast.showToast(
-          //     msg: "el mensaje: $message",
-          //     toastLength: Toast.LENGTH_LONG,
-          //     //gravity: ToastGravity.CENTER,
-          // );
           if(message.contains("31")) data.ozone = true;
           if(message.contains("32")) data.compresor = true;
           if(message.contains("33")) data.ionize = true;
           if(message.contains("34")) data.airFresh = true;
-          data.avoidPlaySound = false;
+          data.soundStart = false;
         }
       }
       else if(message.contains("D:")){
@@ -84,7 +79,7 @@ Future<void> getValues(String string, ProviderData data) async {
 }
 
 Future<void> sendStartSound(ProviderData data) async {
-  data.socket!.send([0x41], data.addresesToSend, data.port); //enviar comando para que el ESP reproduzca sonido de inicio
+  data.socket!.send([0x41], data.addresesToSend, data.port); //envio la letra A para que el ESP reproduzca sonido de inicio
 }
 
 Future<void> closeComm(ProviderData data, bool send) async {
@@ -95,7 +90,7 @@ Future<void> closeComm(ProviderData data, bool send) async {
     data.startTimer = 0;
     data.enterOnce = true;
     data.enableSwitch = false;
-    data.avoidPlaySound = true;
+    data.soundStart = true;
   }
 }
 
