@@ -78,7 +78,7 @@ class _UdpCommunicationState extends State<UdpCommunication> with WidgetsBinding
                 children: [
                   SwitchButton("Ozono", const [0x31], const [0x35], data, 1),
                   SwitchButton("Compresor", const [0x32], const [0x36], data, 2),
-                  SwitchButton("Ionizar", const [0x33], const [0x37], data, 3),
+                  SwitchButton("Calentador", const [0x33], const [0x37], data, 3),
                   SwitchButton("Ambientador", const [0x34], const [0x38],data, 4),
                 ],
               ),

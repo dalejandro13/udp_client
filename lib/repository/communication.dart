@@ -44,6 +44,10 @@ Future<void> startComm(ProviderData data) async {
       else if(message.contains("D:")){
         await closeComm(data, false);
       }
+      else if(message.contains("OZ:")){ //desactiva el boton de ionizador(calentador)
+        data.ionize = false;
+        data.airFresh = false;
+      }
       else { //llega informacion del sensor
         data.ctrl2?.text += "$message\n";
         await getValues(message, data);
