@@ -91,7 +91,7 @@ Future<void> messageBox(BuildContext context) async {
             width: 70.0,
             child: Image.asset('assets\\images\\iconFlexo.png')
           ),
-          const Text("Flexolumens\nderechos reservados\n2022 - 2023\n\nversion 1.0.0"),
+          const Text("Flexolumens\nderechos reservados\n2022 - 2023\n\nversion 1.0.2"),
         ],
       ),
       actions: [
