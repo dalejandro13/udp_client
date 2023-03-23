@@ -15,7 +15,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ProviderData()),
       ],
       child: const MaterialApp(
-        title: "ozone aplication",
+        title: "FlexoOzono",
         debugShowCheckedModeBanner: false,
         home: UdpCommunication(),
       ),
